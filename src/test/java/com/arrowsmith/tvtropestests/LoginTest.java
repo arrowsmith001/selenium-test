@@ -5,6 +5,7 @@ import com.arrowsmith.utils.TestUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.time.Duration;
@@ -15,26 +16,26 @@ public class LoginTest extends TvTropesTestBase {
     @Test(groups = {"positiveTest"})
     private void successfulLoginTest(String url, String username, String password)
     {
-        driver.get(url);
+        getUrlAndMaximize(url);
 
         consentToCookies();
 
         login(username, password);
 
-        assert(doesUserProfileExist());
+        Assert.assertTrue(doesUserProfileExist(), "User profile not found - login unsuccessful");
     }
 
     @Parameters({"url", "username", "password"})
     @Test(groups = {"negativeTest"})
     private void unsuccessfulLoginTest(String url, String username, String password)
     {
-        driver.get(url);
+        getUrlAndMaximize(url);
 
         consentToCookies();
 
         login(username, password);
 
-        assert( ! doesUserProfileExist());
+        Assert.assertFalse(doesUserProfileExist(), "User profile found - login successful");
     }
 
 

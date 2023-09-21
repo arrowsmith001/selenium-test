@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="allSuites" parallel="true">
+    <suite-files>
+        <suite-file path="LinksTest.xml" />
+        <suite-file path="LoginTests.xml" />
+        <suite-file path="ManageCookiesTests.xml" />
+    </suite-files>
+</suite>

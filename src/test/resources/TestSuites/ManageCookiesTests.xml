@@ -11,5 +11,12 @@
         </classes>
     </test>
 
+    <test name="Manage Cookies Edge">
+        <parameter name="browser" value="edge"/>
+        <classes>
+            <class name="com.arrowsmith.tvtropestests.ManageCookiesTest" />
+        </classes>
+    </test>
+
 
 </suite>

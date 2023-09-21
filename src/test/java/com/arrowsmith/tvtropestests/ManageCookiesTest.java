@@ -3,72 +3,85 @@ package com.arrowsmith.tvtropestests;
 import com.arrowsmith.base.TvTropesTestBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ManageCookiesTest extends TvTropesTestBase
 {
-    final String minimalCookieName = "FCCDCF";
+    final Map<String, Integer> browsersToMinimumAdditionalCookies = new HashMap<String, Integer>() {{
+        put("chrome", 3);
+        put("edge", 3);
+    }};
 
 
-    @Parameters("url")
+    @Parameters({"url", "browser"})
     @Test(priority = 1, enabled = true, groups = {"testGroup"})
-    public void confirmMinimalCookiesTest(String url) {
+    public void confirmMinimalCookiesTest(String url, String browser) {
 
         driver.get(url);
         driver.manage().window().maximize();
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
-        final Set<Cookie> cookiesBefore = driver.manage().getCookies();
+        final Set<Cookie> cookiesBefore = getCookies();
 
         String dialogClass = "fc-dialog-container";
+
         WebElement dialog = driver.findElement(By.className(dialogClass));
-        assert(dialog.isDisplayed());
+        Assert.assertTrue(dialog.isDisplayed(), "Cookie consent dialog box is not displayed");
 
         selectAndConfirmMinimalCookies();
 
         List<WebElement> dialogsAfter = driver.findElements(By.className(dialogClass));
-        assert(dialogsAfter.isEmpty());
+        Assert.assertTrue(dialogsAfter.isEmpty(), "Cookie consent dialog box was found, should have been dismissed");
 
-        final Set<Cookie> cookiesAfter = driver.manage().getCookies();
-        assert(cookiesBefore.size() < cookiesAfter.size());
 
+        final Set<Cookie> cookiesAfter = getCookies();
+        final int minimalCookies = browsersToMinimumAdditionalCookies.get(browser);
+        final int expectedNumberOfCookies = cookiesBefore.size() + minimalCookies;
+
+        Assert.assertEquals(cookiesAfter.size(), expectedNumberOfCookies, "Number of cookies has not increased to minimum expected: "
+                + cookiesBefore.size() + " before, "
+                + cookiesAfter.size() + " after,"
+                + expectedNumberOfCookies + " expected");
     }
 
-    @Parameters("url")
+    @Parameters({"url", "browser"})
     @Test
-    public void confirmAllCookiesTest(String url)
+    public void confirmAllCookiesTest(String url, String browser)
     {
         driver.get(url);
         driver.manage().window().maximize();
 
-        // TODO: Check actual cookies
+        final Set<Cookie> cookiesBefore = getCookies();
 
-        try
-        {
-            String dialogClass = "fc-dialog-container";
+        String dialogClass = "fc-dialog-container";
 
-            WebElement dialog = driver.findElement(By.className(dialogClass));
+        WebElement dialog = driver.findElement(By.className(dialogClass));
+        Assert.assertTrue(dialog.isDisplayed(), "Cookie consent dialog box is not displayed");
 
-            assert(dialog != null && dialog.isDisplayed());
+        consentToCookies();
 
-            consentToCookies();
+        List<WebElement> dialogsAfter = driver.findElements(By.className(dialogClass));
+        Assert.assertTrue(dialogsAfter.isEmpty(), "Cookie consent dialog box was found, should have been dismissed");
 
-            List<WebElement> dialogsAfter = driver.findElements(By.className(dialogClass));
 
-            assert(dialogsAfter.isEmpty());
-        }
-        catch(Exception e)
-        {
-            assert(false);
-        }
+        final Set<Cookie> cookiesAfter = getCookies();
+        final int minimalCookies = browsersToMinimumAdditionalCookies.get(browser);
+        final int expectedMinimalNumberOfCookies = cookiesBefore.size() + minimalCookies;
+        boolean hasCookiesIncreasedToAboveMinimum = expectedMinimalNumberOfCookies <= cookiesAfter.size();
+
+        Assert.assertTrue(hasCookiesIncreasedToAboveMinimum, "Number of cookies has not increased above minimum expected: "
+                + cookiesBefore.size() + " before, "
+                + cookiesAfter.size() + " after,"
+                + " at least " + expectedMinimalNumberOfCookies + " expected");
+
     }
 
 
@@ -94,7 +107,6 @@ public class ManageCookiesTest extends TvTropesTestBase
 
         String confirmChoices = "fc-confirm-choices";
         preferences2.findElement(By.className(confirmChoices)).click();
-
     }
 
     private void togglePreferences(WebElement root) {

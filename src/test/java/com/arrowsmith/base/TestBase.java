@@ -1,11 +1,18 @@
 package com.arrowsmith.base;
 
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.Set;
 
 public class TestBase {
 
@@ -18,19 +25,46 @@ public class TestBase {
         switch(browser)
         {
             case "chrome":
-                System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
-                driver = new ChromeDriver();
+                setChromeDriver();
                 break;
-            default:
-                System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
-                driver = new ChromeDriver();
+            case "edge":
+                setEdgeDriver();
                 break;
+            default: setChromeDriver();
         }
     }
 
-    @AfterMethod(alwaysRun = true)
+    private void setChromeDriver() {
+        System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
+        driver = new ChromeDriver();
+    }
+    private void setEdgeDriver() {
+        System.setProperty("webdriver.edge.driver", "src/test/resources/msedgedriver.exe");
+        driver = new EdgeDriver();
+    }
+
+    protected Set<Cookie> getCookies()
+    {
+        return driver.manage().getCookies();
+    }
+
+    protected void getUrlAndMaximize(String url)
+    {
+        driver.get(url);
+        driver.manage().window().maximize();
+    }
+    protected void wait(int seconds){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(seconds));
+        try {
+            wait.wait();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @AfterMethod(enabled = true, alwaysRun = true)
     protected void tearDown()
     {
-        driver.quit();
+       driver.quit();
     }
 }

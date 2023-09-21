@@ -2,10 +2,10 @@
 
 <suite name="LoginTests" verbose="1">
 
-    <parameter name="browser" value="chrome" />
     <parameter name="url" value="https://tvtropes.org/" />
 
-    <test name="Successful Login">
+    <test name="Chrome Successful Login">
+        <parameter name="browser" value="chrome" />
         <parameter name="username" value="sgerrgesgrergse" />
         <parameter name="password" value="password123" />
         <groups>
@@ -16,9 +16,9 @@
         <classes>
             <class name="com.arrowsmith.tvtropestests.LoginTest" />
         </classes>
-
     </test>
-    <test name="Unsuccessful Login">
+
+    <test name="Chrome Unsuccessful Login">
         <parameter name="username" value="" />
         <parameter name="password" value="" />
         <groups>
@@ -29,7 +29,34 @@
         <classes>
             <class name="com.arrowsmith.tvtropestests.LoginTest" />
         </classes>
+    </test>
 
+    <test name="Edge Successful Login">
+        <parameter name="browser" value="edge" />
+        <parameter name="username" value="sgerrgesgrergse" />
+        <parameter name="password" value="password123" />
+        <groups>
+            <run>
+                <include name="positiveTest" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.arrowsmith.tvtropestests.LoginTest" />
+        </classes>
+    </test>
+
+    <test name="Edge Unsuccessful Login">
+        <parameter name="browser" value="edge" />
+        <parameter name="username" value="" />
+        <parameter name="password" value="" />
+        <groups>
+            <run>
+                <include name="negativeTest" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.arrowsmith.tvtropestests.LoginTest" />
+        </classes>
     </test>
 
 
