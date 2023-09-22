@@ -32,15 +32,14 @@ public class ManageCookiesTest extends TvTropesTestBase
         final Set<Cookie> cookiesBefore = getCookies();
 
         String dialogClass = "fc-dialog-container";
-
         WebElement dialog = driver.findElement(By.className(dialogClass));
         Assert.assertTrue(dialog.isDisplayed(), "Cookie consent dialog box is not displayed");
 
         selectAndConfirmMinimalCookies();
 
+
         List<WebElement> dialogsAfter = driver.findElements(By.className(dialogClass));
         Assert.assertTrue(dialogsAfter.isEmpty(), "Cookie consent dialog box was found, should have been dismissed");
-
 
         final Set<Cookie> cookiesAfter = getCookies();
         final int minimalCookies = browsersToMinimumAdditionalCookies.get(browser);
@@ -53,7 +52,7 @@ public class ManageCookiesTest extends TvTropesTestBase
     }
 
     @Parameters({"url", "browser"})
-    @Test
+    @Test(enabled = true)
     public void confirmAllCookiesTest(String url, String browser)
     {
         driver.get(url);

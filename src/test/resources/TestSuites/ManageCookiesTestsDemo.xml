@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="ManageCookiesTestsDemo" verbose="1">
+
+
+    <test name="Manage Cookies Demo">
+        <parameter name="url" value="https://tvtropes.org/" />
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="com.arrowsmith.tvtropestests.ManageCookiesTest" />
+        </classes>
+    </test>
+
+
+
+</suite>

@@ -13,7 +13,7 @@ import java.time.Duration;
 public class LoginTest extends TvTropesTestBase {
 
     @Parameters({"url", "username", "password"})
-    @Test(groups = {"positiveTest"})
+    @Test(enabled = true, groups = {"positiveTest"})
     private void successfulLoginTest(String url, String username, String password)
     {
         getUrlAndMaximize(url);
@@ -26,7 +26,7 @@ public class LoginTest extends TvTropesTestBase {
     }
 
     @Parameters({"url", "username", "password"})
-    @Test(groups = {"negativeTest"})
+    @Test(enabled = true, groups = {"negativeTest"})
     private void unsuccessfulLoginTest(String url, String username, String password)
     {
         getUrlAndMaximize(url);
